@@ -1,140 +1,140 @@
 # cluster-image
 
-Sealos cluster image，也称为集群镜像，是 Sealos 工具的一个创新功能。该特性允许用户将 Kubernetes 云原生应用和插件打包成一个统一的 Docker 镜像，从而简化和标准化云原生生态下各种应用及插件的部署和管理。
+Sealos 클러스터 이미지는 Sealos 도구의 혁신적인 기능입니다. 이 기능을 통해 사용자는 Kubernetes 클라우드 네이티브 애플리케이션과 플러그인을 통합된 Docker 이미지로 패키징하여 클라우드 네이티브 생태계에서 다양한 애플리케이션과 플러그인의 배포 및 관리를 단순화하고 표준화할 수 있습니다.
 
-- Rootfs 集群镜像: [runtime项目](https://github.com/labring-actions/runtime)
-- Github 镜像清单：[cluster-image-docs](https://github.com/labring-actions/cluster-image-docs)
-- DockerHub 镜像：[docker.io/labring](https://hub.docker.com/u/labring)
+- Rootfs 클러스터 이미지: [runtime 프로젝트](https://github.com/labring-actions/runtime)
+- Github 이미지 목록: [cluster-image-docs](https://github.com/labring-actions/cluster-image-docs)
+- DockerHub 이미지: [docker.io/labring](https://hub.docker.com/u/labring)
 
-## 功能特性
+## 주요 기능
 
-1. :package: 统一封装: 集成 Kubernetes 应用和插件依赖的所需的所有资源，包括 YAML 文件、Helm charts、Docker 镜像和二进制文件。
-2. :sparkles: 简化安装: 提供一键部署能力，通过单一的镜像，一键部署整个应用，大幅降低部署复杂性和时间。
-3. :globe_with_meridians: 离线部署: 支持在没有网络连接的环境中部署集群镜像。
-4. :wrench: 高度可定制: 支持用户按需定制化封装，满足不同环境和需求的部署。
-5. :earth_africa: 多环境兼容: 适用于不同的运行环境，无论是在开发、测试还是生产环境，确保一致性和稳定性。
-6. :arrows_counterclockwise: 快速迭代和版本更新  : 集群镜像中的应用大多以`helm upgrade --install`形式安装，便于版本快速迭代和升级。
+1. :package: 통합 패키징: Kubernetes 애플리케이션과 플러그인 종속성에 필요한 모든 리소스(YAML 파일, Helm charts, Docker 이미지, 바이너리 파일 포함)를 통합합니다.
+2. :sparkles: 간편한 설치: 단일 이미지로 전체 애플리케이션을 원클릭 배포하는 기능을 제공하여 배포 복잡성과 시간을 크게 줄입니다.
+3. :globe_with_meridians: 오프라인 배포: 네트워크 연결이 없는 환경에서도 클러스터 이미지 배포를 지원합니다.
+4. :wrench: 높은 사용자 정의 가능: 다양한 환경과 요구사항에 맞는 배포를 위해 사용자 요구에 따른 맞춤형 패키징을 지원합니다.
+5. :earth_africa: 다중 환경 호환성: 개발, 테스트, 프로덕션 환경 등 다양한 실행 환경에 적용 가능하며 일관성과 안정성을 보장합니다.
+6. :arrows_counterclockwise: 빠른 반복 및 버전 업데이트: 클러스터 이미지의 애플리케이션은 대부분 `helm upgrade --install` 형식으로 설치되어 빠른 버전 반복과 업그레이드가 가능합니다.
 
-## 镜像类型
+## 이미지 유형
 
-**kubernetes 镜像：**
+**kubernetes 이미지:**
 
-| 镜像地址                                    | 镜像名称            | 说明                     |
+| 이미지 주소                                    | 이미지 이름            | 설명                     |
 | :------------------------------------------ | :------------------ | :----------------------- |
-| `docker.io/labring/kubernetes:<tag>`        | `kubernetes`        | 包含containerd容器运行时 |
-| `docker.io/labring/kubernetes-docker:<tag>` | `kubernetes-docker` | 包含docker容器运行时     |
-| `docker.io/labring/kubernetes-crio::<tag>`  | `kubernetes-crio`   | 包含crio-o容器运行时     |
+| `docker.io/labring/kubernetes:<tag>`        | `kubernetes`        | containerd 컨테이너 런타임 포함 |
+| `docker.io/labring/kubernetes-docker:<tag>` | `kubernetes-docker` | docker 컨테이너 런타임 포함     |
+| `docker.io/labring/kubernetes-crio::<tag>`  | `kubernetes-crio`   | crio-o 컨테이너 런타임 포함     |
 
-**application 镜像：**
+**application 이미지:**
 
-| 镜像地址                          | 镜像名称 | 说明            |
+| 이미지 주소                          | 이미지 이름 | 설명            |
 | --------------------------------- | -------- | --------------- |
-| `docker.io/labring/helm:<tag>`    | helm     | helm二进制文件  |
-| `docker.io/labring/calico:<tag>`  | calico   | calico网络插件  |
-| `docker.io/labring/openebs:<tag>` | openebs  | openebs存储插件 |
+| `docker.io/labring/helm:<tag>`    | helm     | helm 바이너리 파일  |
+| `docker.io/labring/calico:<tag>`  | calico   | calico 네트워크 플러그인  |
+| `docker.io/labring/openebs:<tag>` | openebs  | openebs 스토리지 플러그인 |
 | ......                            |          | ......          |
 
 
-## 构建方法
+## 빌드 방법
 
-Sealos 在 dockerhub 中的镜像使用 `github action` 自动构建，社区用户可以通过创建 github ISSUE 来触发构建任务，在ISSUE中通过支持的指令结合参数构建需要的镜像和版本，版本参数请参考应用官方网站、helm 仓库或 github release 页面。
+Sealos의 dockerhub 이미지는 `github action`을 사용하여 자동으로 빌드됩니다. 커뮤니티 사용자는 github ISSUE를 생성하여 빌드 작업을 트리거할 수 있으며, ISSUE에서 지원되는 명령과 매개변수를 사용하여 필요한 이미지와 버전을 빌드할 수 있습니다. 버전 매개변수는 애플리케이션 공식 웹사이트, helm 저장소 또는 github release 페이지를 참조하세요.
 
-已贡献的镜像可直接点击跳转 Github ISSUE 进行新版本构建: [ :arrow_forward: ] [点击创建ISSUE](https://github.com/labring/cluster-image/issues/new?assignees=&labels=&template=autobuild-apps.md&title=【Auto-build】helm)。
+이미 기여된 이미지는 직접 클릭하여 Github ISSUE로 이동하여 새 버전을 빌드할 수 있습니다: [ :arrow_forward: ] [ISSUE 생성하기](https://github.com/labring/cluster-image/issues/new?assignees=&labels=&template=autobuild-apps.md&title=【Auto-build】helm).
 
-以构建新的nginx集群镜像为例，由于社区已在`application`目录贡献了 nginx 构建脚本的实现，只需在ISSUE里搜索标题`【Auto-build】nginx`，在评论框输入以下指令，结合镜像名称（固定）和镜像版本（与官方一致），即可构建出新版本的nginx集群镜像，构建完成后会自动上传至DockerHub。
+새로운 nginx 클러스터 이미지 빌드를 예로 들면, 커뮤니티가 이미 `application` 디렉토리에 nginx 빌드 스크립트를 기여했으므로, ISSUE에서 `【Auto-build】nginx` 제목을 검색하고 댓글 상자에 다음 명령을 입력하면 됩니다. 이미지 이름(고정)과 이미지 버전(공식 버전과 일치)을 조합하여 새 버전의 nginx 클러스터 이미지를 빌드할 수 있으며, 빌드 완료 후 자동으로 DockerHub에 업로드됩니다.
 
-示例指令如下：
+예시 명령:
 
 ```bash
 /imagebuild_apps nginx v1.23.1
 ```
-出于安全考虑及便于管理 ，在未打上 `accepted` 的 ISSUE 中触发镜像构建，或者 ISSUE 标题应用名与指令应用名不匹配，镜像构建将不生效。
-如果需构建镜像，请通知或 @ 仓库维护者打上 `accepted` label 并在对应的 ISSUE 中构建镜像。
-如果 ISSUE 中没找到对应的应用，请用模版新增一个 ISSUE ，标题格式必须正确。
+보안상의 이유와 관리 편의를 위해 `accepted` 레이블이 없는 ISSUE에서 이미지 빌드를 트리거하거나 ISSUE 제목의 애플리케이션 이름이 명령의 애플리케이션 이름과 일치하지 않으면 이미지 빌드가 작동하지 않습니다.
+이미지를 빌드해야 하는 경우 저장소 관리자에게 알리거나 @멘션하여 `accepted` 레이블을 추가하고 해당 ISSUE에서 이미지를 빌드하세요.
+ISSUE에서 해당 애플리케이션을 찾을 수 없는 경우 템플릿을 사용하여 새 ISSUE를 추가하세요. 제목 형식은 반드시 올바르게 작성되어야 합니다.
 
-### 项目结构
+### 프로젝트 구조
 
-镜像配置存放位置及目录结构如下：
+이미지 구성 저장 위치 및 디렉토리 구조는 다음과 같습니다:
 
 ```yaml
-├── applications                # 所有应用
-│   ├── apisix                  # 应用名称
-│   │   ├── latest              # 应用版本
-│   │   │   ├── entrypoint.sh   # 安装脚本
-│   │   │   ├── init.sh         # 依赖下载
-│   │   │   └── Kubefile        # 镜像文件
-│   │   └── README.md           # 使用说明
-│   ├── argocd
-│   │   ├── latest
-│   │   │   ├── entrypoint.sh
-│   │   │   ├── init.sh
-│   │   │   └── Kubefile
-│   │   └── README.md
+├── applications                # 모든 애플리케이션
+│   ├── apisix                  # 애플리케이션 이름
+│   │   ├── latest              # 애플리케이션 버전
+│   │   │   ├── entrypoint.sh   # 설치 스크립트
+│   │   │   ├── init.sh         # 종속성 다운로드
+│   │   │   └── Kubefile        # 이미지 파일
+│   │   └── README.md           # 사용 설명서
+│   ├── argocd
+│   │   ├── latest
+│   │   │   ├── entrypoint.sh
+│   │   │   ├── init.sh
+│   │   │   └── Kubefile
+│   │   └── README.md
 ```
 
-**构建规则说明：**
+**빌드 규칙 설명:**
 
-- 如果 ISSUE 传递的版本参数匹配`applications/<应用名称>`下的`<应用版本>`，则执行`<应用版本>`目录中的`init.sh`脚本以及该目录上下文进行构建；
-- 如果未找到固定版本，版本信息将传递到`latest`目录下的`init.sh`脚本，并执行该脚本以及基于该目录上下文进行构建。
+- ISSUE에서 전달된 버전 매개변수가 `applications/<애플리케이션 이름>` 아래의 `<애플리케이션 버전>`과 일치하면 `<애플리케이션 버전>` 디렉토리의 `init.sh` 스크립트를 실행하고 해당 디렉토리 컨텍스트를 기반으로 빌드합니다.
+- 고정 버전을 찾을 수 없으면 버전 정보가 `latest` 디렉토리의 `init.sh` 스크립트로 전달되고 해당 스크립트를 실행하며 해당 디렉토리 컨텍스트를 기반으로 빌드합니다.
 
-**目录结构说明：**
+**디렉토리 구조 설명:**
 
-- `init.sh`：名称不可变，内容可自定义，一般是需要下载一些helm chart、yaml文件以及不同架构的二进制文件，比如helm、kubectl-minio相关；
-- `Kubefile`：镜像构建配置文件，支持 Docker/Kubefile 名称；
-- `entrypoint.sh`：名称及内容自定义，一般封装应用实际部署命令，例如kubectl apply 或 helm install等；
+- `init.sh`: 이름은 변경할 수 없으며, 내용은 사용자 정의 가능합니다. 일반적으로 helm chart, yaml 파일 및 다른 아키텍처의 바이너리 파일(예: helm, kubectl-minio 관련)을 다운로드하는 데 사용됩니다.
+- `Kubefile`: 이미지 빌드 구성 파일로, Docker/Kubefile 이름을 지원합니다.
+- `entrypoint.sh`: 이름과 내용을 사용자 정의할 수 있으며, 일반적으로 kubectl apply 또는 helm install과 같은 애플리케이션 실제 배포 명령을 캡슐화합니다.
 
-* `charts`：该目录存放集群镜像需要的helm chart，sealos根据扫描的chart 解析镜像清单，build出registry目录放到与Kubefile同级的目录；
-* `manifests` ：该目录存放一些yaml文件，sealos会扫描manifests目录所有的镜像并build出registry目录放到与Kubefile同级的目录；
-* `images/shim` ：该目录主要存储一些额外的镜像列表，例如手动创建`images_list.txt`，并build出registry目录放到与Kubefile同级的目录；
-* `opt`：该目录存放一些二进制文件，比如helm、kubectl-minio等；
-* `registry`：默认自动生成，该目录必须放在与Kubefile同级的目录，否则无法拷贝到master0的私有仓库，制作镜像也需要注意下。不要把registry存放到charts里，否则helm扫描慢导致OOM [labring/sealos#1545](https://github.com/labring/sealos/issues/1545)；
-* 模板渲染：如果需要模板，在etc、charts、manifests放一些 `*.tmpl` 结尾的文件可以被`sealos run -e`环境变量渲染后去掉tmpl，比如渲染之前是`aa.yaml.tmpl` 渲染后 `aa.yaml` ，使用需要注意文件名不要与现有的文件冲突。
+* `charts`: 이 디렉토리는 클러스터 이미지에 필요한 helm chart를 저장합니다. sealos는 스캔된 chart를 기반으로 이미지 목록을 구문 분석하고 Kubefile과 동일한 수준의 디렉토리에 registry 디렉토리를 빌드합니다.
+* `manifests`: 이 디렉토리는 일부 yaml 파일을 저장합니다. sealos는 manifests 디렉토리의 모든 이미지를 스캔하고 Kubefile과 동일한 수준의 디렉토리에 registry 디렉토리를 빌드합니다.
+* `images/shim`: 이 디렉토리는 주로 추가 이미지 목록을 저장합니다. 예를 들어 수동으로 `images_list.txt`를 생성하고 Kubefile과 동일한 수준의 디렉토리에 registry 디렉토리를 빌드합니다.
+* `opt`: 이 디렉토리는 helm, kubectl-minio 등의 바이너리 파일을 저장합니다.
+* `registry`: 기본적으로 자동 생성되며, 이 디렉토리는 Kubefile과 동일한 수준의 디렉토리에 배치되어야 합니다. 그렇지 않으면 master0의 프라이빗 레지스트리에 복사할 수 없으므로 이미지 제작 시 주의가 필요합니다. registry를 charts에 저장하지 마세요. 그렇지 않으면 helm 스캔이 느려져 OOM이 발생할 수 있습니다 [labring/sealos#1545](https://github.com/labring/sealos/issues/1545).
+* 템플릿 렌더링: 템플릿이 필요한 경우 etc, charts, manifests에 `*.tmpl`로 끝나는 파일을 배치하면 `sealos run -e` 환경 변수로 렌더링한 후 tmpl이 제거됩니다. 예를 들어 렌더링 전 `aa.yaml.tmpl`은 렌더링 후 `aa.yaml`이 됩니다. 사용 시 파일 이름이 기존 파일과 충돌하지 않도록 주의하세요.
 
-### ISSUE 支持的命令
+### ISSUE에서 지원하는 명령
 
-Github ISSUE支持的命令清单如下：
+Github ISSUE에서 지원하는 명령 목록은 다음과 같습니다:
 
-| 命令                       | 说明                                   |
+| 명령                       | 설명                                   |
 | -------------------------- | :------------------------------------- |
-| `/imagebuild_apps`         | 构建集群应用镜像                       |
-| `/imagebuild_dockerimages` | 构建标准docker镜像                     |
-| `/imagesync`               | 同步镜像，有权限控制，只有机器人可操作 |
+| `/imagebuild_apps`         | 클러스터 애플리케이션 이미지 빌드                       |
+| `/imagebuild_dockerimages` | 표준 docker 이미지 빌드                     |
+| `/imagesync`               | 이미지 동기화, 권한 제어가 있으며 로봇만 작업 가능 |
 
-### 本地构建示例
+### 로컬 빌드 예시
 
-拉取代码到本地
+코드를 로컬로 가져오기
 
 ```bash
 $ git clone https://github.com/labring-actions/cluster-image.git
 ```
-切换到集群镜像初始化脚本所在目录
+클러스터 이미지 초기화 스크립트가 있는 디렉토리로 이동
 ```
 $ cd cluster-image/applications/nginx/latest
 ```
-执行初始化脚本下载相关依赖
+초기화 스크립트를 실행하여 관련 종속성 다운로드
 ```
 $ bash init.sh amd64 nginx v1.25.6
 ```
-执行sealos命令进行构建
+sealos 명령을 실행하여 빌드
 ```
 $ sealos build -t docker.io/labring/nginx:v1.25.6 .
 ```
-查看构建的镜像
+빌드된 이미지 확인
 ```
 $ sealos images
 REPOSITORY                                                      TAG             IMAGE ID       CREATED        SIZE
 docker.io/labring/nginx                                         v1.25.2         41328582759a   3 months ago   37.4 MB
 ```
 
-## ROADMAP
+## 로드맵
 
-- wasm 镜像支持
+- wasm 이미지 지원
 
-## 如何贡献
+## 기여 방법
 
-贡献流程如下：
+기여 프로세스는 다음과 같습니다:
 
-1. 参考 `application` 路径下其他应用的实现逻辑，编写自己应用的 `init.sh` 脚本、`Kubefile`以及`entrypoint.sh`。
-2. 提出PR，合并代码到github cluster-image仓库。
-3. 创建ISSUE，并执行构建，构建成功后镜像将自动推送到官方 dockerhub 仓库。
-4. 拉取镜像到本地，使用 sealos run 命令安装运行应用。
+1. `application` 경로 아래의 다른 애플리케이션 구현 로직을 참조하여 자신의 애플리케이션에 대한 `init.sh` 스크립트, `Kubefile` 및 `entrypoint.sh`를 작성합니다.
+2. PR을 제출하여 코드를 github cluster-image 저장소에 병합합니다.
+3. ISSUE를 생성하고 빌드를 실행합니다. 빌드가 성공하면 이미지가 자동으로 공식 dockerhub 저장소에 푸시됩니다.
+4. 이미지를 로컬로 가져와서 sealos run 명령을 사용하여 애플리케이션을 설치하고 실행합니다.

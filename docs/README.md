@@ -1,66 +1,66 @@
 ####
 
-#### 编译集群镜像
+#### 클러스터 이미지 컴파일
 
-所有的镜像都基于runtime目录中几个目录制作的
+모든 이미지는 runtime 디렉토리의 여러 디렉토리를 기반으로 제작됩니다
 
-##### k8s镜像
+##### k8s 이미지
 
-1. containerd containerd相关的配置以及脚本
-2. docker docker相关的配置以及脚本
-3. rootfs 公共的rootfs相关的配置以及脚本
-4. .github/hack/containerd.sh 下载二进制以及其他的配置修改的脚本、
-5. .github/hack/build.sh 编译k8s的集群镜像同时build  x86和arm64架构的镜像
+1. containerd containerd 관련 구성 및 스크립트
+2. docker docker 관련 구성 및 스크립트
+3. rootfs 공통 rootfs 관련 구성 및 스크립트
+4. .github/hack/containerd.sh 바이너리 다운로드 및 기타 구성 수정 스크립트
+5. .github/hack/build.sh k8s 클러스터 이미지 컴파일 및 x86과 arm64 아키텍처 이미지 동시 빌드
 
-支持containerd，最终会以 docker.io/labring/kubernetes:$VERSION 为最终的镜像名称。
-- docker.io/labring/kubernetes:$VERSION-amd64 是AMD64架构
-- docker.io/labring/kubernetes:$VERSION-arm64 是ARM64架构
+containerd를 지원하며, 최종적으로 docker.io/labring/kubernetes:$VERSION이 최종 이미지 이름이 됩니다.
+- docker.io/labring/kubernetes:$VERSION-amd64는 AMD64 아키텍처입니다
+- docker.io/labring/kubernetes:$VERSION-arm64는 ARM64 아키텍처입니다
 
-支持docker，最终会以 docker.io/labring/kubernetes-docker:$VERSION 为最终的镜像名称。
-- docker.io/labring/kubernetes-docker:$VERSION-amd64 是AMD64架构
-- docker.io/labring/kubernetes-docker:$VERSION-arm64 是ARM64架构
+docker를 지원하며, 최종적으로 docker.io/labring/kubernetes-docker:$VERSION이 최종 이미지 이름이 됩니다.
+- docker.io/labring/kubernetes-docker:$VERSION-amd64는 AMD64 아키텍처입니다
+- docker.io/labring/kubernetes-docker:$VERSION-arm64는 ARM64 아키텍처입니다
 
->`$VERSION`＝`k8sVersion`＋`sealosVersion`，详情见https://github.com/labring/cluster-image/issues/131
->>`v1.24`(镜像Tag示例：v1.24-amd64/v1.24-arm64)
->>>k8s是v1.24最新发布版本，sealos是最新开发版本（ghcr.io/labring/sealos-patch:dev）
+>`$VERSION`＝`k8sVersion`＋`sealosVersion`, 자세한 내용은 https://github.com/labring/cluster-image/issues/131 참조
+>>`v1.24`(이미지 태그 예시: v1.24-amd64/v1.24-arm64)
+>>>k8s는 v1.24 최신 릴리스 버전, sealos는 최신 개발 버전 (ghcr.io/labring/sealos-patch:dev)
 
->>`v1.24.4`(镜像Tag示例：v1.24.4-amd64/v1.24.4-arm64)
->>>k8s是v1.24.4历史发布版本，sealos是最新正式版本
+>>`v1.24.4`(이미지 태그 예시: v1.24.4-amd64/v1.24.4-arm64)
+>>>k8s는 v1.24.4 이전 릴리스 버전, sealos는 최신 정식 버전
 
->>`v1.24.4-4.1.3`(镜像Tag示例：v1.24.4-4.1.3-amd64/v1.24.4-4.1.3-arm64)
->>>k8s是v1.24.4历史发布版本，sealos是4.1.3历史发布版本
+>>`v1.24.4-4.1.3`(이미지 태그 예시: v1.24.4-4.1.3-amd64/v1.24.4-4.1.3-arm64)
+>>>k8s는 v1.24.4 이전 릴리스 버전, sealos는 4.1.3 이전 릴리스 버전
 
-##### APP 镜像
+##### APP 이미지
 
-所有的镜像都是在 applications/$NAME/$VERSION 目录存放相关的配置
+모든 이미지는 applications/$NAME/$VERSION 디렉토리에 관련 구성을 저장합니다
 
-- NAME 是镜像名称
-- VERSION 是镜像版本
+- NAME은 이미지 이름입니다
+- VERSION은 이미지 버전입니다
 
-最终会以 docker.io/labring/$NAME:$VERSION 以最终的镜像名称。
+최종적으로 docker.io/labring/$NAME:$VERSION이 최종 이미지 이름이 됩니다.
 
-- docker.io/labring/$NAME:$VERSION-amd64 是AMD64架构
-- docker.io/labring/$NAME:$VERSION-arm64 是ARM64架构
+- docker.io/labring/$NAME:$VERSION-amd64는 AMD64 아키텍처입니다
+- docker.io/labring/$NAME:$VERSION-arm64는 ARM64 아키텍처입니다
 
-applications/$NAME/$VERSION 下存放 init.sh 主要是有一些二进制需要分开存放.
-init.sh下载一些二进制使用，示例代码可以看helm和minio-operator的脚
+applications/$NAME/$VERSION 아래에 init.sh를 저장하며, 주로 일부 바이너리를 별도로 저장해야 하는 경우에 사용됩니다.
+init.sh는 일부 바이너리를 다운로드하는 데 사용되며, 예시 코드는 helm과 minio-operator 스크립트를 참조하세요
 
-##### 配置镜像
+##### 구성 이미지
 
-所有的镜像都是在 config/$NAME/$VERSION 目录存放相关的配置
+모든 이미지는 config/$NAME/$VERSION 디렉토리에 관련 구성을 저장합니다
 
-- NAME 是镜像名称
-- VERSION 是镜像版本
+- NAME은 이미지 이름입니다
+- VERSION은 이미지 버전입니다
 
-最终会以 docker.io/labring/$NAME:$VERSION 以最终的镜像名称。
+최종적으로 docker.io/labring/$NAME:$VERSION이 최종 이미지 이름이 됩니다.
 
 
-##### 如何构建镜像
+##### 이미지 빌드 방법
 
-1. 在构建目录新建 manifests 并把对应的yaml放入，sealos build会自动解析其中的镜像版本
-2. 在构建目录新建 charts 并把对应的chart放入，sealos build 会自动解析其中的镜像版本
-3. 如果需要手动写镜像，在构建目录新建目录 images/shim 并写入imageList文件（文件名不限定）
-4. 编写Dockerfile 
+1. 빌드 디렉토리에 manifests를 새로 만들고 해당 yaml을 넣으면 sealos build가 자동으로 이미지 버전을 파싱합니다
+2. 빌드 디렉토리에 charts를 새로 만들고 해당 chart를 넣으면 sealos build가 자동으로 이미지 버전을 파싱합니다
+3. 수동으로 이미지를 작성해야 하는 경우 빌드 디렉토리에 images/shim 디렉토리를 새로 만들고 imageList 파일을 작성합니다(파일명은 제한 없음)
+4. Dockerfile 작성
     ```dockerfile
     FROM scratch 
     COPY manifests ./app/manifests
@@ -68,4 +68,4 @@ init.sh下载一些二进制使用，示例代码可以看helm和minio-operator�
     COPY registry ./registry
     CMD ["kubectl apply -f app/manifests/"]
     ```
-   主要是为了区分一下APP
+   주로 APP을 구분하기 위한 것입니다
